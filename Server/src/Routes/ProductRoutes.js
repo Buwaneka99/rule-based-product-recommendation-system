@@ -4,7 +4,9 @@ import {
   getProducts,
   getProductById,
   updateProduct,
-  deleteProduct
+  deleteProduct,
+  getProductRecommendations,
+  getRecommendationAlgorithmInfo
 } from "../Controllers/ProductController.js";
 
 
@@ -15,5 +17,7 @@ router.get('/', getProducts);
 router.get('/:id', getProductById);
 router.put('/:id', updateProduct);
 router.delete('/:id', deleteProduct);
+router.get('/:id/recommendations', getProductRecommendations);
+router.get('/recommendations/algorithm', getRecommendationAlgorithmInfo);
 
 export default router;

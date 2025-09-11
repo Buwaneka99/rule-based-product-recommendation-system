@@ -27,6 +27,21 @@ const productSchema = new mongoose.Schema({
   required: true
   },
 
+  tags: {
+    type: [String],
+    default: []
+  },
+
+  brand: {
+    type: String,
+    required: false
+  },
+
+  inStock: {
+    type: Boolean,
+    default: true
+  }
+
 });
 
 const Product = mongoose.model('Product', productSchema);
