@@ -1,0 +1,175 @@
+/* ProductCard.css */
+
+/* Product Card */
+.product-card {
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(10px);
+  border-radius: 16px;
+  overflow: hidden;
+  transition: all 0.3s ease;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  cursor: pointer;
+}
+
+.product-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+}
+
+.product-card:focus {
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+/* Prevent any focus on text elements that could cause cursor */
+.product-details *, .product-name, .product-brand, .product-category, .product-price {
+  outline: none !important;
+  -webkit-tap-highlight-color: transparent !important;
+}
+
+.product-details *:focus, .product-name:focus, .product-brand:focus, 
+.product-category:focus, .product-price:focus {
+  outline: none !important;
+  box-shadow: none !important;
+  caret-color: transparent !important;
+}
+
+/* Allow text selection on product content but prevent text cursor */
+.product-name, .product-brand, .product-category, .product-price {
+  user-select: text !important;
+  -webkit-user-select: text !important;
+  -moz-user-select: text !important;
+  -ms-user-select: text !important;
+  cursor: default !important; /* Use default cursor, not text cursor */
+  caret-color: transparent !important; /* Hide text caret if it appears */
+  -webkit-touch-callout: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Prevent text selection only on image areas and decorative elements */
+.product-image, .product-placeholder, .stock-badge, .stars {
+  user-select: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  cursor: default;
+}
+
+.product-image {
+  position: relative;
+  height: 200px;
+  background: linear-gradient(135deg, #f3f4f6 0%, #e5e7eb 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.product-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.product-placeholder {
+  font-size: 3rem;
+  color: #9ca3af;
+}
+
+.stock-badge {
+  position: absolute;
+  top: 0.75rem;
+  right: 0.75rem;
+  padding: 0.25rem 0.75rem;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.stock-badge.in-stock {
+  background: #d1fae5;
+  color: #065f46;
+}
+
+.stock-badge.out-of-stock {
+  background: #fee2e2;
+  color: #991b1b;
+}
+
+.product-details {
+  padding: 1.5rem;
+}
+
+.product-category {
+  color: #667eea;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  margin-bottom: 0.5rem;
+}
+
+.product-name {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: #111827;
+  margin: 0 0 0.5rem 0;
+  line-height: 1.4;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.product-brand {
+  color: #6b7280;
+  font-size: 0.875rem;
+  margin: 0 0 1rem 0;
+}
+
+.product-price {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #111827;
+  margin-bottom: 1rem;
+}
+
+.add-to-cart {
+  width: 100%;
+  padding: 0.75rem;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border: none;
+  border-radius: 12px;
+  font-weight: 600;
+  font-size: 0.875rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  user-select: none !important;
+  -webkit-user-select: none !important;
+  -moz-user-select: none !important;
+  -ms-user-select: none !important;
+}
+
+.add-to-cart:hover:not(.disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px 0 rgba(102, 126, 234, 0.4);
+}
+
+.add-to-cart.disabled {
+  background: #9ca3af;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+.add-to-cart:focus {
+  outline: none;
+}

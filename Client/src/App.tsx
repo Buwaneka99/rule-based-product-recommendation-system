@@ -1,35 +1,46 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { useState } from 'react';
+import { Package, Home as HomeIcon, Settings } from 'lucide-react';
+import Home from './Pages/Home';
+import ProductManagement from './Component/ProductManagement';
+import './App.css';
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [currentPage, setCurrentPage] = useState<'home' | 'management'>('home');
 
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+    <div className="App">
+      {/* Navigation Header */}
+      <nav className="app-nav">
+        <div className="nav-content">
+          <div className="nav-brand">
+            <Package size={24} />
+            <span>Product Store</span>
+          </div>
+          <div className="nav-links">
+            <button
+              onClick={() => setCurrentPage('home')}
+              className={`nav-link ${currentPage === 'home' ? 'active' : ''}`}
+            >
+              <HomeIcon size={18} />
+              Home
+            </button>
+            <button
+              onClick={() => setCurrentPage('management')}
+              className={`nav-link ${currentPage === 'management' ? 'active' : ''}`}
+            >
+              <Settings size={18} />
+              Manage Products
+            </button>
+          </div>
+        </div>
+      </nav>
+
+      {/* Page Content */}
+      <main className="app-main">
+        {currentPage === 'home' ? <Home /> : <ProductManagement />}
+      </main>
+    </div>
+  );
 }
 
-export default App
+export default App;
