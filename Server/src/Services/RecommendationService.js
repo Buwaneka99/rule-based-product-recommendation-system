@@ -188,10 +188,21 @@ class RecommendationService {
             price: product.price,
             category: product.category,
             description: product.description,
-            image: product.image,
+            imageUrl: product.imageUrl,
             tags: product.tags,
             brand: product.brand,
-            inStock: product.inStock
+            inStock: product.inStock,
+            // Include enhanced features
+            rating: product.rating,
+            reviewCount: product.reviewCount,
+            salesCount: product.salesCount,
+            isEcoFriendly: product.isEcoFriendly,
+            isBestSeller: product.isBestSeller,
+            isOnSale: product.isOnSale,
+            salePrice: product.salePrice,
+            saleEndDate: product.saleEndDate,
+            createdAt: product.createdAt,
+            updatedAt: product.updatedAt
           },
           ...scoreData
         };

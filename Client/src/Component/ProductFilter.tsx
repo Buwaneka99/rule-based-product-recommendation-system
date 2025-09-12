@@ -1,7 +1,7 @@
 import React from 'react';
 import { Search, Filter } from 'lucide-react';
 import type { SearchFilters } from '../types';
-import './ProductFilter.css';
+import '../CSS/ProductFilter.css';
 
 interface ProductFilterProps {
   filters: SearchFilters;

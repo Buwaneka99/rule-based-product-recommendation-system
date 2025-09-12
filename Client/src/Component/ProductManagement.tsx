@@ -3,7 +3,7 @@ import { Plus, Edit, Trash2, Search, Package, AlertTriangle } from 'lucide-react
 import type { Product } from '../types';
 import ProductService from '../services/ProductService';
 import ProductForm from './ProductForm';
-import './ProductManagement.css';
+import '../CSS/ProductManagement.css';
 
 const ProductManagement: React.FC = () => {
   const [products, setProducts] = useState<Product[]>([]);
@@ -62,6 +62,8 @@ const ProductManagement: React.FC = () => {
     try {
       await ProductService.createProduct(productData);
       await loadProducts();
+      setIsFormOpen(false);
+      setSelectedProduct(null);
       showSuccessMessage('Product created successfully!');
     } catch (err) {
       setError('Failed to create product');
@@ -75,6 +77,8 @@ const ProductManagement: React.FC = () => {
     try {
       await ProductService.updateProduct(selectedProduct._id, productData);
       await loadProducts();
+      setIsFormOpen(false);
+      setSelectedProduct(null);
       showSuccessMessage('Product updated successfully!');
     } catch (err) {
       setError('Failed to update product');

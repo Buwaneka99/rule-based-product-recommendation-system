@@ -132,7 +132,10 @@ export class ProductService {
   // Update product
   static async updateProduct(id: string, product: Partial<Product>): Promise<Product> {
     try {
+      console.log('Updating product with ID:', id);
+      console.log('Product data being sent:', product);
       const response = await api.put(`/products/${id}`, product);
+      console.log('Update response:', response.data);
       return response.data.product;
     } catch (error) {
       console.error('Error updating product:', error);
@@ -153,25 +156,82 @@ export class ProductService {
   // Get recommendations - using the products/:id/recommendations endpoint
   static async getRecommendations(filters: RecommendationFilters = {}): Promise<Product[]> {
     try {
-      // Since your backend needs a product ID, let's get all products first and use the first one
+      // Get all products first to have a product ID for recommendations
       const products = await this.getAllProducts();
       if (products.products.length === 0) {
         return [];
       }
       
-      // Use the first product to get recommendations
-      const response = await api.get<Product[]>(`/products/${products.products[0]._id}/recommendations`);
-      return response.data;
+      // Use the first product to get recommendations from your backend endpoint
+      const productId = products.products[0]._id;
+      const response = await api.get(`/products/${productId}/recommendations`, {
+        params: {
+          limit: filters.limit || 8,
+          minScore: 10,
+          includeOutOfStock: false,
+          diversityBoost: true,
+          explain: false
+        }
+      });
+      
+      // Your backend returns { success, recommendations, currentProduct, ... }
+      if (response.data.success && response.data.recommendations) {
+        return response.data.recommendations;
+      }
+      
+      return [];
     } catch (error) {
       console.error('Error fetching recommendations:', error);
-      // Fallback: return some products as recommendations
+      // Fallback: return some featured products
       try {
         const products = await this.getAllProducts();
-        return products.products.slice(0, filters.limit || 8);
+        return products.products
+          .filter(product => product.inStock && (product.isBestSeller || product.rating && product.rating >= 4.0))
+          .slice(0, filters.limit || 8);
       } catch (fallbackError) {
         console.error('Error in fallback recommendations:', fallbackError);
         return [];
       }
+    }
+  }
+
+  // Get recommendation algorithm information
+  static async getRecommendationAlgorithmInfo(): Promise<any> {
+    try {
+      const response = await api.get('/products/recommendations/algorithm');
+      return response.data;
+    } catch (error) {
+      console.error('Error fetching algorithm info:', error);
+      throw error;
+    }
+  }
+
+  // Get recommendations for a specific product
+  static async getProductRecommendations(
+    productId: string, 
+    options: {
+      limit?: number;
+      minScore?: number;
+      includeOutOfStock?: boolean;
+      diversityBoost?: boolean;
+      explain?: boolean;
+    } = {}
+  ): Promise<any> {
+    try {
+      const response = await api.get(`/products/${productId}/recommendations`, {
+        params: {
+          limit: options.limit || 5,
+          minScore: options.minScore || 10,
+          includeOutOfStock: options.includeOutOfStock || false,
+          diversityBoost: options.diversityBoost !== false,
+          explain: options.explain || false
+        }
+      });
+      
+      return response.data;
+    } catch (error) {
+      console.error('Error fetching product recommendations:', error);
+      throw error;
     }
   }
 

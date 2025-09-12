@@ -22,9 +22,9 @@ const productSchema = new mongoose.Schema({
     required: true 
   },
   
-  image: { 
+  imageUrl: { 
     type: String, 
-    required: true
+    required: false
   },
 
   tags: {
@@ -40,8 +40,53 @@ const productSchema = new mongoose.Schema({
   inStock: {
     type: Boolean,
     default: true
+  },
+
+  // New innovative features
+  rating: {
+    type: Number,
+    min: 0,
+    max: 5,
+    default: 0
+  },
+
+  reviewCount: {
+    type: Number,
+    default: 0
+  },
+
+  salesCount: {
+    type: Number,
+    default: 0
+  },
+
+  isEcoFriendly: {
+    type: Boolean,
+    default: false
+  },
+
+  isBestSeller: {
+    type: Boolean,
+    default: false
+  },
+
+  isOnSale: {
+    type: Boolean,
+    default: false
+  },
+
+  salePrice: {
+    type: Number,
+    required: false
+  },
+
+  saleEndDate: {
+    type: Date,
+    required: false
   }
 
+}, {
+  timestamps: true
 });
 
 const Product = mongoose.model('Product', productSchema);

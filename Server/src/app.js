@@ -4,6 +4,9 @@ import 'dotenv/config';
 
 //Import routes paths
 import productRoutes from './Routes/ProductRoutes.js';
+import wishlistRoutes from './Routes/WishlistRoutes.js';
+import recentlyViewedRoutes from './Routes/RecentlyViewedRoutes.js';
+import analyticsRoutes from './Routes/AnalyticsRoutes.js';
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -16,6 +19,9 @@ app.use(express.urlencoded({ extended: true }));
 
 // Routes
 app.use('/api/products', productRoutes);
+app.use('/api/wishlist', wishlistRoutes);
+app.use('/api/recently-viewed', recentlyViewedRoutes);
+app.use('/api/analytics', analyticsRoutes);
 
 // Basic route
 app.get('/', (req, res) => {

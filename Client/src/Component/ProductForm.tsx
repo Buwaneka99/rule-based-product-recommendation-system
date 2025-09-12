@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { X, Save, Package } from 'lucide-react';
 import type { Product } from '../types';
-import './ProductForm.css';
+import '../CSS/ProductForm.css';
 
 interface ProductFormProps {
   product?: Product | null;
@@ -27,7 +27,15 @@ const ProductForm: React.FC<ProductFormProps> = ({
     brand: '',
     description: '',
     imageUrl: '',
-    inStock: true
+    inStock: true,
+    rating: 0,
+    reviewCount: 0,
+    salesCount: 0,
+    isEcoFriendly: false,
+    isBestSeller: false,
+    isOnSale: false,
+    salePrice: 0,
+    saleEndDate: ''
   });
 
   const [errors, setErrors] = useState<Record<string, string>>({});
@@ -41,7 +49,15 @@ const ProductForm: React.FC<ProductFormProps> = ({
         brand: product.brand,
         description: product.description,
         imageUrl: product.imageUrl || '',
-        inStock: product.inStock
+        inStock: product.inStock,
+        rating: product.rating || 0,
+        reviewCount: product.reviewCount || 0,
+        salesCount: product.salesCount || 0,
+        isEcoFriendly: product.isEcoFriendly || false,
+        isBestSeller: product.isBestSeller || false,
+        isOnSale: product.isOnSale || false,
+        salePrice: product.salePrice || 0,
+        saleEndDate: product.saleEndDate ? product.saleEndDate.split('T')[0] : ''
       });
     } else {
       setFormData({
@@ -51,7 +67,15 @@ const ProductForm: React.FC<ProductFormProps> = ({
         brand: '',
         description: '',
         imageUrl: '',
-        inStock: true
+        inStock: true,
+        rating: 0,
+        reviewCount: 0,
+        salesCount: 0,
+        isEcoFriendly: false,
+        isBestSeller: false,
+        isOnSale: false,
+        salePrice: 0,
+        saleEndDate: ''
       });
     }
   }, [product]);
@@ -87,6 +111,7 @@ const ProductForm: React.FC<ProductFormProps> = ({
     e.preventDefault();
     
     if (validateForm()) {
+      console.log('Form data being submitted:', formData);
       onSave(formData);
       onClose();
     }
@@ -218,6 +243,81 @@ const ProductForm: React.FC<ProductFormProps> = ({
                 <span className="checkmark"></span>
                 In Stock
               </label>
+            </div>
+
+            <div className="form-group">
+              <label className="checkbox-label">
+                <input
+                  type="checkbox"
+                  checked={formData.isEcoFriendly}
+                  onChange={(e) => handleChange('isEcoFriendly', e.target.checked)}
+                />
+                <span className="checkmark"></span>
+                Eco-Friendly Product
+              </label>
+            </div>
+
+            <div className="form-group">
+              <label className="checkbox-label">
+                <input
+                  type="checkbox"
+                  checked={formData.isOnSale}
+                  onChange={(e) => handleChange('isOnSale', e.target.checked)}
+                />
+                <span className="checkmark"></span>
+                On Sale
+              </label>
+            </div>
+
+            {formData.isOnSale && (
+              <>
+                <div className="form-group">
+                  <label htmlFor="salePrice">Sale Price</label>
+                  <input
+                    type="number"
+                    id="salePrice"
+                    value={formData.salePrice}
+                    onChange={(e) => handleChange('salePrice', parseFloat(e.target.value) || 0)}
+                    placeholder="0.00"
+                    min="0"
+                    step="0.01"
+                  />
+                </div>
+
+                <div className="form-group">
+                  <label htmlFor="saleEndDate">Sale End Date</label>
+                  <input
+                    type="date"
+                    id="saleEndDate"
+                    value={formData.saleEndDate}
+                    onChange={(e) => handleChange('saleEndDate', e.target.value)}
+                  />
+                </div>
+              </>
+            )}
+
+            <div className="form-group">
+              <label htmlFor="rating">Rating (0-5)</label>
+              <input
+                type="number"
+                id="rating"
+                value={formData.rating}
+                onChange={(e) => handleChange('rating', parseFloat(e.target.value) || 0)}
+                min="0"
+                max="5"
+                step="0.1"
+              />
+            </div>
+
+            <div className="form-group">
+              <label htmlFor="salesCount">Sales Count</label>
+              <input
+                type="number"
+                id="salesCount"
+                value={formData.salesCount}
+                onChange={(e) => handleChange('salesCount', parseInt(e.target.value) || 0)}
+                min="0"
+              />
             </div>
           </div>
 
