@@ -38,6 +38,10 @@ const ProductForm: React.FC<ProductFormProps> = ({
     saleEndDate: ''
   });
 
+  const [showCustomCategory, setShowCustomCategory] = useState(false);
+  const [showCustomBrand, setShowCustomBrand] = useState(false);
+  const [customCategory, setCustomCategory] = useState('');
+  const [customBrand, setCustomBrand] = useState('');
   const [errors, setErrors] = useState<Record<string, string>>({});
 
   useEffect(() => {
@@ -59,6 +63,12 @@ const ProductForm: React.FC<ProductFormProps> = ({
         salePrice: product.salePrice || 0,
         saleEndDate: product.saleEndDate ? product.saleEndDate.split('T')[0] : ''
       });
+      
+      // Check if category or brand is not in the lists (indicating custom values)
+      setShowCustomCategory(!categories.includes(product.category) && product.category !== '');
+      setShowCustomBrand(!brands.includes(product.brand) && product.brand !== '');
+      setCustomCategory(!categories.includes(product.category) ? product.category : '');
+      setCustomBrand(!brands.includes(product.brand) ? product.brand : '');
     } else {
       setFormData({
         name: '',
@@ -77,8 +87,12 @@ const ProductForm: React.FC<ProductFormProps> = ({
         salePrice: 0,
         saleEndDate: ''
       });
+      setShowCustomCategory(false);
+      setShowCustomBrand(false);
+      setCustomCategory('');
+      setCustomBrand('');
     }
-  }, [product]);
+  }, [product, categories, brands]);
 
   const validateForm = () => {
     const newErrors: Record<string, string> = {};
@@ -87,11 +101,15 @@ const ProductForm: React.FC<ProductFormProps> = ({
       newErrors.name = 'Product name is required';
     }
     
-    if (!formData.category.trim()) {
+    // Check for category (either selected or custom)
+    const finalCategory = showCustomCategory ? customCategory : formData.category;
+    if (!finalCategory.trim()) {
       newErrors.category = 'Category is required';
     }
     
-    if (!formData.brand.trim()) {
+    // Check for brand (either selected or custom)
+    const finalBrand = showCustomBrand ? customBrand : formData.brand;
+    if (!finalBrand.trim()) {
       newErrors.brand = 'Brand is required';
     }
     
@@ -103,16 +121,71 @@ const ProductForm: React.FC<ProductFormProps> = ({
       newErrors.description = 'Description is required';
     }
     
+    if (showCustomCategory && !customCategory.trim()) {
+      newErrors.customCategory = 'Please enter a category name';
+    }
+    
+    if (showCustomBrand && !customBrand.trim()) {
+      newErrors.customBrand = 'Please enter a brand name';
+    }
+    
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
+  };
+
+  const handleCategoryChange = (value: string) => {
+    if (value === 'other') {
+      setShowCustomCategory(true);
+      setFormData(prev => ({ ...prev, category: '' }));
+    } else {
+      setShowCustomCategory(false);
+      setCustomCategory('');
+      setFormData(prev => ({ ...prev, category: value }));
+    }
+    
+    // Clear errors
+    if (errors.category || errors.customCategory) {
+      setErrors(prev => ({
+        ...prev,
+        category: '',
+        customCategory: ''
+      }));
+    }
+  };
+
+  const handleBrandChange = (value: string) => {
+    if (value === 'other') {
+      setShowCustomBrand(true);
+      setFormData(prev => ({ ...prev, brand: '' }));
+    } else {
+      setShowCustomBrand(false);
+      setCustomBrand('');
+      setFormData(prev => ({ ...prev, brand: value }));
+    }
+    
+    // Clear errors
+    if (errors.brand || errors.customBrand) {
+      setErrors(prev => ({
+        ...prev,
+        brand: '',
+        customBrand: ''
+      }));
+    }
   };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     
     if (validateForm()) {
-      console.log('Form data being submitted:', formData);
-      onSave(formData);
+      // Use custom values if they're selected
+      const finalFormData = {
+        ...formData,
+        category: showCustomCategory ? customCategory : formData.category,
+        brand: showCustomBrand ? customBrand : formData.brand
+      };
+      
+      console.log('Form data being submitted:', finalFormData);
+      onSave(finalFormData);
       onClose();
     }
   };
@@ -166,32 +239,60 @@ const ProductForm: React.FC<ProductFormProps> = ({
               <label htmlFor="category">Category *</label>
               <select
                 id="category"
-                value={formData.category}
-                onChange={(e) => handleChange('category', e.target.value)}
+                value={showCustomCategory ? 'other' : formData.category}
+                onChange={(e) => handleCategoryChange(e.target.value)}
                 className={errors.category ? 'error' : ''}
               >
                 <option value="">Select Category</option>
                 {categories.map(category => (
                   <option key={category} value={category}>{category}</option>
                 ))}
+                <option value="other">Other (Add New Category)</option>
               </select>
               {errors.category && <span className="error-message">{errors.category}</span>}
+              
+              {showCustomCategory && (
+                <div className="custom-input-container">
+                  <input
+                    type="text"
+                    value={customCategory}
+                    onChange={(e) => setCustomCategory(e.target.value)}
+                    placeholder="Enter new category name"
+                    className={`custom-input ${errors.customCategory ? 'error' : ''}`}
+                  />
+                  {errors.customCategory && <span className="error-message">{errors.customCategory}</span>}
+                </div>
+              )}
             </div>
 
             <div className="form-group">
               <label htmlFor="brand">Brand *</label>
               <select
                 id="brand"
-                value={formData.brand}
-                onChange={(e) => handleChange('brand', e.target.value)}
+                value={showCustomBrand ? 'other' : formData.brand}
+                onChange={(e) => handleBrandChange(e.target.value)}
                 className={errors.brand ? 'error' : ''}
               >
                 <option value="">Select Brand</option>
                 {brands.map(brand => (
                   <option key={brand} value={brand}>{brand}</option>
                 ))}
+                <option value="other">Other (Add New Brand)</option>
               </select>
               {errors.brand && <span className="error-message">{errors.brand}</span>}
+              
+              {showCustomBrand && (
+                <div className="custom-input-container">
+                  <input
+                    type="text"
+                    value={customBrand}
+                    onChange={(e) => setCustomBrand(e.target.value)}
+                    placeholder="Enter new brand name"
+                    className={`custom-input ${errors.customBrand ? 'error' : ''}`}
+                  />
+                  {errors.customBrand && <span className="error-message">{errors.customBrand}</span>}
+                </div>
+              )}
             </div>
 
             <div className="form-group">

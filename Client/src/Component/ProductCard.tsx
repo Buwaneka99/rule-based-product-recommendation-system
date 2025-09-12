@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Heart, Star, ShoppingCart, Leaf, Clock, TrendingUp, Sparkles } from 'lucide-react';
+import { Heart, Star, ShoppingCart, Leaf, Clock, TrendingUp, Sparkles, Eye } from 'lucide-react';
 import type { Product } from '../types';
 import WishlistService from '../services/WishlistService';
 import AnalyticsService from '../services/AnalyticsService';
@@ -10,6 +10,7 @@ interface ProductCardProps {
   product: Product;
   onProductClick?: (product: Product) => void;
   onGetRecommendations?: (productId: string) => void;
+  onQuickView?: (product: Product) => void;
   showRecommendationButton?: boolean;
 }
 
@@ -17,6 +18,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
   product, 
   onProductClick, 
   onGetRecommendations, 
+  onQuickView,
   showRecommendationButton = false 
 }) => {
   const [isInWishlist, setIsInWishlist] = useState(false);
@@ -99,6 +101,13 @@ const ProductCard: React.FC<ProductCardProps> = ({
     
     if (onGetRecommendations) {
       onGetRecommendations(product._id);
+    }
+  };
+
+  const handleQuickView = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (onQuickView) {
+      onQuickView(product);
     }
   };
 
@@ -201,6 +210,16 @@ const ProductCard: React.FC<ProductCardProps> = ({
           title={isInWishlist ? 'Remove from Wishlist' : 'Add to Wishlist'}
         >
           <Heart size={16} />
+        </button>
+
+        {/* Quick View Button */}
+        <button 
+          className="quick-view-btn"
+          onClick={handleQuickView}
+          title="Quick View"
+        >
+          <Eye size={16} />
+          Quick View
         </button>
 
         <div className={`stock-badge ${product.inStock ? 'in-stock' : 'out-of-stock'}`}>
