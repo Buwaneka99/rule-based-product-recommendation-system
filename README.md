@@ -162,7 +162,7 @@ PORT=5000
 NODE_ENV=development
 
 # MongoDB Configuration
-MONGODB_URI=mongodb://localhost:27017/product_recommendation_db
+MONGODB_URI="mongodb+srv://buwanekawijesinghe1_db_user:483X9QOc3HzMw7qh@rule-based-recommendati.7s7refc.mongodb.net/product-recommendation?retryWrites=true&w=majority&appName=product-recommendation"
 
 # CORS Configuration
 CLIENT_URL=http://localhost:5173
